@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Deploy a Koyo app. Static hosts take the koyoapp build output, and server platforms run the app with the scaffolded Procfile. Prerender, then deploy.">
+<title>Deploying | Koyo Docs</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+</head>
+<body data-page="deploying">
+
+<header id="site-header"></header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Documentation"></nav>
+
+  <main class="content">
+    <article>
+      <h1>Deploying</h1>
+      <p class="lede">
+        Every scaffold ships deploy-ready: pick a static host for the build
+        output, or run the live server on a platform that takes a Procfile.
+      </p>
+      <div class="rule"></div>
+
+      <section id="paths">
+        <h2><a class="anchor" href="#paths">Two ways to go live<span class="hash">#</span></a></h2>
+        <p>
+          Koyo supports both of the common deployment shapes, and the scaffold
+          includes the files for each.
+        </p>
+        <ul>
+          <li>
+            <strong>Static hosting</strong> for sites with no dynamic routes:
+            run <code>koyoapp build</code> and point a CDN or static host at
+            <code>.koyo/build/site</code>. No Python is needed at serving time.
+          </li>
+          <li>
+            <strong>Live server</strong> for dynamic routes (bracket segments)
+            and session state: run the Koyo app under uvicorn. This is the path
+            the rest of this page covers.
+          </li>
+        </ul>
+      </section>
+
+      <section id="files">
+        <h2><a class="anchor" href="#files">What the scaffold ships<span class="hash">#</span></a></h2>
+        <p>
+          <code>koyoapp create</code> writes three deployment files into every
+          new project:
+        </p>
+        <ul>
+          <li>
+            <code>Procfile</code> starts the production server with a
+            self-contained command:
+            <pre><code>web: python -m uvicorn koyoapp.serve:app --host 0.0.0.0 --port $PORT</code></pre>
+          </li>
+          <li>
+            <code>requirements.txt</code> pins <code>koyoapp</code> to the
+            version that created the project, so the platform installs the same
+            release you developed against.
+          </li>
+          <li>
+            <code>.railwayignore</code> keeps the local <code>.venv</code>,
+            bytecode cache, and build output out of the upload, so containers
+            build their own Linux environment. The same exclusions apply to any
+            platform that rsyncs or zips the project directory.
+          </li>
+        </ul>
+      </section>
+
+      <section id="railway">
+        <h2><a class="anchor" href="#railway">Deploy to Railway<span class="hash">#</span></a></h2>
+        <p>
+          Install the CLI, then from the project root:
+        </p>
+        <pre><code>brew install railway        # or: npm i -g @railway/cli
+railway login              # opens your browser
+railway init               # creates and links a project
+railway up                 # builds and deploys
+railway domain             # get a public URL, e.g. myapp.up.railway.app</code></pre>
+        <p>
+          Railpack detects Python from <code>requirements.txt</code>, installs
+          the pinned dependencies, and starts the <code>web</code> command from
+          the Procfile. Railway injects <code>$PORT</code> automatically, and
+          the app binds <code>0.0.0.0</code> in the Procfile so the platform
+          can reach it. Subsequent deploys are just <code>railway up</code>
+          again.
+        </p>
+      </section>
+
+      <section id="render">
+        <h2><a class="anchor" href="#render">Deploy to Render<span class="hash">#</span></a></h2>
+        <p>
+          Create a Web Service pointing at the project root and set:
+        </p>
+        <ul>
+          <li><strong>Build command:</strong> <code>pip install -r requirements.txt</code></li>
+          <li><strong>Start command:</strong> <code>python -m uvicorn koyoapp.serve:app --host 0.0.0.0 --port $PORT</code></li>
+        </ul>
+        <p>
+          Render sets <code>$PORT</code> for you. The same start command works
+          on Fly.io, a VPS with a reverse proxy, or any platform that runs
+          Python processes.
+        </p>
+      </section>
+
+      <section id="environment">
+        <h2><a class="anchor" href="#environment">Environment<span class="hash">#</span></a></h2>
+        <p>
+          By default the server runs from the project root, so
+          <code>serve.py</code> resolves <code>app/</code>, <code>public/</code>,
+          and <code>styles/</code> relative to the current directory. If the
+          platform runs from somewhere else, point it at the project root
+          explicitly:
+        </p>
+        <pre><code>KOYO_PROJECT_DIR=/path/to/project</code></pre>
+        <p>
+          Production mode is the default: without <code>KOYO_DEV=1</code> the
+          live reload probe and script are not registered, and errors render the
+          generic page without a traceback.
+        </p>
+      </section>
+
+      <section id="limitations">
+        <h2><a class="anchor" href="#limitations">Scaling and state<span class="hash">#</span></a></h2>
+        <p>
+          Session state is in-memory only. It resets on restart and is not
+          shared across processes: run a single replica unless you move state
+          elsewhere. Static assets and the compiled <code>styles/koyo.css</code>
+          ship with the app, so the server needs no build step beyond
+          installing the pinned dependencies.
+        </p>
+      </section>
+    </article>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<script src="nav.js"></script>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

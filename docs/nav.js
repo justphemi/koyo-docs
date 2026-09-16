@@ -34,6 +34,7 @@ window.KOYO_NAV = {
       links: [
         { page: "dev-tooling", label: "Development tooling" },
         { page: "production-build", label: "Production build" },
+        { page: "deploying", label: "Deploying" },
         { page: "cli-reference", label: "CLI reference" },
         { page: "faq", label: "FAQ and support" },
       ],
