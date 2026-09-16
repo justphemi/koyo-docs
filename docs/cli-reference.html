@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Full reference for the koyoapp command line tool: create, dev, add, remove, install, and build.">
+<meta name="description" content="Full reference for the koyoapp command line tool: create, dev, add, remove, install, upgrade, build, and version.">
 <title>CLI Reference | Koyo Docs</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="styles.css">
@@ -56,8 +56,16 @@
                 <td>Create <code>.venv</code> if needed and install all dependencies.</td>
               </tr>
               <tr>
+                <td><code>koyoapp upgrade [VERSION]</code></td>
+                <td>Upgrade koyoapp in the project venv and pin the installed version in pyproject.toml.</td>
+              </tr>
+              <tr>
                 <td><code>koyoapp build</code></td>
                 <td>Prerender static routes to <code>.koyo/build/site</code>.</td>
+              </tr>
+              <tr>
+                <td><code>koyoapp --version</code> / <code>-v</code></td>
+                <td>Print the installed koyoapp version and exit.</td>
               </tr>
             </tbody>
           </table>
@@ -106,6 +114,16 @@
                 <td><code>install</code></td>
                 <td>Delete and recreate <code>.venv</code> before installing.</td>
               </tr>
+              <tr>
+                <td><code>[VERSION]</code></td>
+                <td><code>upgrade</code></td>
+                <td>Specific koyoapp version, for example <code>0.3.0</code>. Defaults to the latest release.</td>
+              </tr>
+              <tr>
+                <td><code>-v</code>, <code>--version</code></td>
+                <td>top-level</td>
+                <td>Print the koyoapp version and exit.</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -120,7 +138,10 @@ koyoapp dev --port 8080 --host 127.0.0.1
 koyoapp add requests
 koyoapp add "httpx>=0.27" --dev
 koyoapp install --no-dev
-koyoapp build</code></pre>
+koyoapp upgrade            # latest
+koyoapp upgrade 0.3.0      # pinned
+koyoapp build
+koyoapp --version</code></pre>
         <p>
           The dependency commands report "not a koyo project" with a hint when
           run outside a folder containing <code>koyo.config.py</code>.

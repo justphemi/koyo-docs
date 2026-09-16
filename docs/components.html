@@ -27,21 +27,27 @@
 
       <section id="tag-factories">
         <h2><a class="anchor" href="#tag-factories">Tag factories<span class="hash">#</span></a></h2>
-        <p>
+<p>
           Every HTML tag has a factory with the same name in
-          <code>koyoapp.html</code>. Call it to create the element, then use
-          subscripting to add children. You must call the factory first,
-          subscripting happens after the call:
+          <code>koyoapp.html</code>. Call it with element children
+          positionally and attributes as trailing keywords:
         </p>
         <pre><code>from koyoapp.html import div, h1, p
 
-card = div(class_="rounded-lg border p-4")[
+card = div(h1("Title"), p("Body text"), class_="rounded-lg border p-4")
+</code></pre>
+        <p>
+          Or build children after the call with subscripting. You must call
+          the factory first, subscripting happens on the result:
+        </p>
+        <pre><code>card = div(class_="rounded-lg border p-4")[
     h1("Title"),
     p("Body text"),
 ]</code></pre>
         <p>
-          This produces a nested structure that <code>render_html()</code>
-          serializes to a string.
+          Both produce a nested structure that <code>render_html()</code>
+          serializes to a string. Passing a list as a child flattens it in
+          place.
         </p>
       </section>
 
@@ -49,8 +55,9 @@ card = div(class_="rounded-lg border p-4")[
         <h2><a class="anchor" href="#attributes">Attributes<span class="hash">#</span></a></h2>
         <ul>
           <li>
-            <code>class_</code> is translated to the HTML <code>class</code>
-            attribute, so the name does not shadow Python keywords.
+            <code>class_</code> (or <code>cls</code>) is translated to the
+            HTML <code>class</code> attribute, so the name does not shadow
+            Python keywords.
           </li>
           <li>Other attributes pass through with their Python names.</li>
           <li>
@@ -65,13 +72,16 @@ card = div(class_="rounded-lg border p-4")[
       <section id="children">
         <h2><a class="anchor" href="#children">Children and escaping<span class="hash">#</span></a></h2>
         <p>
-          String children are HTML-escaped automatically. Tags inside
-          subscript brackets can be nested freely:
+          String children are HTML-escaped automatically. Tags can be nested
+          freely as positional arguments or inside subscript brackets:
         </p>
-        <pre><code>ul[
-    li("first item"),
-    li("second item"),
-]</code></pre>
+        <pre><code>nav(ul(li("first item"), li("second item")))
+# or: nav[
+#     ul[
+#         li("first item"),
+#         li("second item"),
+#     ],
+# ]</code></pre>
         <p>
           Passing a raw string that is not safe to escape is where
           <code>raw()</code> comes in:
@@ -105,11 +115,7 @@ def page():
 from koyoapp.html import div, footer, span
 
 def site_footer():
-    return footer(class_="border-t")[
-        div(class_="max-w-6xl mx-auto px-4")[
-            span("Built with Koyo"),
-        ],
-    ]</code></pre>
+    return footer(div(span("Built with Koyo"), cls="max-w-6xl mx-auto px-4"), cls="border-t")</code></pre>
         <pre><code># app/layout.py
 from components.site import site_footer</code></pre>
         <p>

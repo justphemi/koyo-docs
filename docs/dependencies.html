@@ -106,6 +106,24 @@ koyoapp install --clean     # recreate the virtual environment first</code></pre
         </ul>
       </section>
 
+      <section id="upgrade">
+        <h2><a class="anchor" href="#upgrade">Upgrading koyoapp<span class="hash">#</span></a></h2>
+        <pre><code>koyoapp upgrade         # latest release
+koyoapp upgrade 0.3.0   # an exact version</code></pre>
+        <ul>
+          <li>
+            Upgrades koyoapp inside the project's <code>.venv</code> without
+            touching your other dependencies.
+          </li>
+          <li>
+            After a successful upgrade the koyoapp entry in
+            <code>pyproject.toml</code> is pinned to the installed version
+            (for example <code>koyoapp==0.2.2</code>), so the lockfile shows
+            exactly what the project is running.
+          </li>
+        </ul>
+      </section>
+
       <section id="project">
         <h2><a class="anchor" href="#project">Project recognition<span class="hash">#</span></a></h2>
         <p>
