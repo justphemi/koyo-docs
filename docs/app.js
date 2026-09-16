@@ -610,7 +610,7 @@
       "factory for components, per-page metadata for title, description " +
       "and Open Graph tags, Tailwind integration, vendored htmx for " +
       "interactivity, per-session in-memory state via use_state, a dev " +
-      "server with hot reload on port 2309, a dependency CLI (add, remove, " +
+      "server with live reload that patches the page in place, a dependency CLI (add, remove, " +
       "install), and a production build that prerenders static routes into " +
       ".koyo/build/site. Full details are in the documentation sections " +
       "below.";

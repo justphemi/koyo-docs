@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Koyo development tooling: the dev server on port 2309, hot reload with a token, quiet logs, verbose mode, and the debug error page.">
+<meta name="description" content="Koyo development tooling: the dev server on port 2309, live reload that patches the page in place, quiet logs, verbose mode, and the debug error page.">
 <title>Development Tooling | Koyo Docs</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="styles.css">
@@ -43,7 +43,7 @@
       </section>
 
       <section id="reload">
-        <h2><a class="anchor" href="#reload">Watch and hot reload<span class="hash">#</span></a></h2>
+        <h2><a class="anchor" href="#reload">Watch and live reload<span class="hash">#</span></a></h2>
         <p>These paths are watched and any change reloads or recompiles:</p>
         <ul>
           <li><code>app/</code> and <code>components/</code> (Python modules).</li>
@@ -52,9 +52,11 @@
           <li><code>koyo.config.py</code> and <code>tailwind.config.js</code>.</li>
         </ul>
         <p>
-          The browser auto-reloads through a polling endpoint
+          The browser patches the page in place through a polling endpoint
           (<code>/__koyo-reload</code>) guarded by a token stored in
-          <code>.koyo/reload-token</code>. Python bytecode cache is redirected
+          <code>.koyo/reload-token</code>, so a save updates the DOM without a
+          full reload and keeps scroll position and form values. Python
+          bytecode cache is redirected
           to <code>.koyo/pycache</code> so <code>__pycache__</code> never
           appears in your source tree.
         </p>
