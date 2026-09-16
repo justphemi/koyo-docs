@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Manage dependencies in Koyo with the koyoapp add, remove, and install commands. Versions are pinned exactly and pyproject.toml is updated with tomlkit.">
+<title>Dependencies | Koyo Docs</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+</head>
+<body data-page="dependencies">
+
+<header id="site-header"></header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Documentation"></nav>
+
+  <main class="content">
+    <article>
+      <h1>Dependencies</h1>
+      <p class="lede">
+        The <code>koyoapp</code> CLI owns <code>pyproject.toml</code> for you.
+        Add a package, remove one, or install everything into a fresh virtual
+        environment.
+      </p>
+      <div class="rule"></div>
+
+      <section id="how-it-works">
+        <h2><a class="anchor" href="#how-it-works">How the CLI models dependencies<span class="hash">#</span></a></h2>
+        <p>
+          Dependencies live in <code>pyproject.toml</code>:
+        </p>
+        <pre><code>[project]
+dependencies = [
+    "requests==2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==7.4.0",
+]</code></pre>
+        <p>
+          The CLI writes with <a href="https://tomlkit.readthedocs.io">tomlkit</a>,
+          so your formatting and comments survive every edit. There is no lock
+          file; pip resolves the declared ranges at install time.
+        </p>
+      </section>
+
+      <section id="add">
+        <h2><a class="anchor" href="#add">Adding packages<span class="hash">#</span></a></h2>
+        <pre><code>koyoapp add requests
+koyoapp add "fastapi>=0.100"
+koyoapp add black --dev
+koyoapp add httpx pytest --dev</code></pre>
+        <ul>
+          <li>
+            Without a specifier, the installed version is pinned exactly, for
+            example <code>requests==2.31.0</code>.
+          </li>
+          <li>
+            Hand a specifier and it is kept as written, such as
+            <code>fastapi&gt;=0.100</code>.
+          </li>
+          <li>
+            <code>--dev</code> routes to the <code>dev</code> optional group
+            instead of runtime dependencies.
+          </li>
+          <li>Multiple packages can be added in one command.</li>
+          <li>The package is installed after the entry is written.</li>
+          <li>
+            Adding a package that is already declared updates the existing line
+            instead of duplicating it.
+          </li>
+        </ul>
+      </section>
+
+      <section id="remove">
+        <h2><a class="anchor" href="#remove">Removing packages<span class="hash">#</span></a></h2>
+        <pre><code>koyoapp remove requests
+koyoapp remove pytest --dev</code></pre>
+        <ul>
+          <li>
+            The entry is removed from both the runtime and dev arrays, then the
+            package is uninstalled.
+          </li>
+          <li>
+            Removing a package that is not present prints an informational
+            message instead of failing.
+          </li>
+        </ul>
+      </section>
+
+      <section id="install">
+        <h2><a class="anchor" href="#install">Installing everything<span class="hash">#</span></a></h2>
+        <pre><code>koyoapp install
+koyoapp install --no-dev    # runtime only
+koyoapp install --clean     # recreate the virtual environment first</code></pre>
+        <ul>
+          <li>
+            A <code>.venv</code> is created automatically when one is missing.
+          </li>
+          <li>Installation batches the dependencies instead of one pip call at a time.</li>
+          <li><code>--no-dev</code> skips the dev group.</li>
+          <li><code>--clean</code> deletes the existing <code>.venv</code> before installing.</li>
+        </ul>
+      </section>
+
+      <section id="project">
+        <h2><a class="anchor" href="#project">Project recognition<span class="hash">#</span></a></h2>
+        <p>
+          The dependency commands expect to run inside a Koyo project. A project
+          is recognized by the presence of <code>koyo.config.py</code>; running
+          outside one stops with a clear error telling you to <code>cd</code>
+          into the project directory first.
+        </p>
+      </section>
+    </article>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<script src="nav.js"></script>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

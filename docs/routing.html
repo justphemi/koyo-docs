@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Koyo routing follows the file tree: app/page.py is /, nested folders are paths, and bracket folders are dynamic segments.">
+<title>Routing | Koyo Docs</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+</head>
+<body data-page="routing">
+
+<header id="site-header"></header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Documentation"></nav>
+
+  <main class="content">
+    <article>
+      <h1>Routing</h1>
+      <p class="lede">
+        In Koyo the file tree is the route table. No central router file to
+        edit, the path to a <code>page.py</code> decides the URL.
+      </p>
+      <div class="rule"></div>
+
+      <section id="conventions">
+        <h2><a class="anchor" href="#conventions">Path conventions<span class="hash">#</span></a></h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>URL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>app/page.py</code></td>
+                <td><code>/</code></td>
+              </tr>
+              <tr>
+                <td><code>app/about/page.py</code></td>
+                <td><code>/about</code></td>
+              </tr>
+              <tr>
+                <td><code>app/blog/[slug]/page.py</code></td>
+                <td><code>/blog/:slug</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          The scaffold ships only the first row: a single home page with a
+          call to action linking to the Koyo documentation. The other rows are
+          what you add yourself: folders inside <code>app/</code> become path
+          segments, and a <code>page.py</code> inside any folder becomes the
+          handler for that path.
+        </p>
+      </section>
+
+      <section id="page-function">
+        <h2><a class="anchor" href="#page-function">The page() function<span class="hash">#</span></a></h2>
+        <p>Each page module exports a <code>page()</code> function that returns HTML:</p>
+        <pre><code># app/post/page.py
+from koyoapp.html import div, h1, p
+
+def page():
+    return div(class_="max-w-2xl mx-auto py-12")[
+        h1("About Koyo"),
+        p("A static-first web framework."),
+    ]</code></pre>
+        <p>
+          The return value can be an element built from the <code>koyoapp.html</code>
+          tag factories or a plain string. For static routes <code>page()</code>
+          takes no arguments.
+        </p>
+      </section>
+
+      <section id="dynamic">
+        <h2><a class="anchor" href="#dynamic">Dynamic segments<span class="hash">#</span></a></h2>
+        <p>
+          A folder whose name is wrapped in brackets becomes a parameter. The
+          segment value is passed to <code>page()</code> as a keyword argument:
+        </p>
+        <pre><code># app/blog/[slug]/page.py
+from koyoapp.html import article, h1
+
+def page(slug):
+    return article(class_="prose")[
+        h1("Post " + slug),
+    ]</code></pre>
+        <p>
+          Add a file at <code>app/blog/[slug]/page.py</code> and it renders
+          URLs such as <code>/blog/hello-world</code>.
+        </p>
+      </section>
+
+      <section id="methods">
+        <h2><a class="anchor" href="#methods">HTTP methods<span class="hash">#</span></a></h2>
+        <p>
+          Every route accepts the standard methods: GET, HEAD, POST, PUT,
+          PATCH, and DELETE. The session counter on the scaffold home page
+          posts through <code>use_state</code>'s internal route and swaps in
+          a fresh render, see <a href="state.html">session state</a>.
+        </p>
+      </section>
+
+      <section id="not-found">
+        <h2><a class="anchor" href="#not-found">Missing pages<span class="hash">#</span></a></h2>
+        <p>
+          When no route matches, Koyo returns a 404 page. A file in
+          <code>public/</code> is served before falling back to routing, so
+          static files take priority for their paths.
+        </p>
+        <p>
+          During development with <code>KOYO_DEV=1</code> set, unhandled errors
+          show a debug page with a traceback. Outside of development, Koyo
+          returns a generic internal server error and keeps the traceback in
+          the dev server log.
+        </p>
+      </section>
+
+      <section id="internal">
+        <h2><a class="anchor" href="#internal">Internal routes<span class="hash">#</span></a></h2>
+        <p>
+          Koyo reserves the <code>/__koyo_state/...</code> namespace for session
+          state updates. You do not need to create or manage these routes; they
+          are handled for you when a page uses <a href="state.html">use_state</a>.
+          The vendored htmx library is served at <code>/htmx.min.js</code>.
+        </p>
+      </section>
+    </article>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<script src="nav.js"></script>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

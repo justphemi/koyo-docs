@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Layouts in Koyo wrap pages. The root app/layout.py renders the html skeleton; layout.py files in any folder wrap that subtree.">
+<title>Layouts | Koyo Docs</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+</head>
+<body data-page="layouts">
+
+<header id="site-header"></header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Documentation"></nav>
+
+  <main class="content">
+    <article>
+      <h1>Layouts</h1>
+      <p class="lede">
+        Layouts give pages a shared skeleton: the html head, navigation, theme,
+        and footer live in a layout once, not in every page.
+      </p>
+      <div class="rule"></div>
+
+      <section id="overview">
+        <h2><a class="anchor" href="#overview">How layouts work<span class="hash">#</span></a></h2>
+        <p>
+          A <code>layout.py</code> file exports a <code>layout()</code> function
+          that receives the rendered children and returns the wrapping HTML.
+          The root layout lives at <code>app/layout.py</code> and wraps every
+          page in the project.
+        </p>
+        <pre><code>def layout(children, request):
+    ...</code></pre>
+        <p>
+          The <code>children</code> argument is the page, already wrapped by any
+          deeper layouts. <code>request</code> is provided when the request is
+          available; the build step may call layouts without a request, so the
+          argument can be omitted from the signature when you do not need it.
+        </p>
+      </section>
+
+      <section id="root">
+        <h2><a class="anchor" href="#root">The root layout<span class="hash">#</span></a></h2>
+        <p>The scaffold generates <code>app/layout.py</code> with the document skeleton:</p>
+        <pre><code># app/layout.py
+from koyoapp.html import body, head, html, link, meta, script
+from koyoapp.meta import metadata_tags
+
+from components.site import site_footer
+
+def layout(children, request):
+    return html(lang="en")[
+        head()[
+            meta(charset="utf-8"),
+            meta(name="viewport", content="width=device-width, initial-scale=1"),
+            meta(name="theme-color", content="#1800ad"),
+            link(rel="stylesheet", href="/styles/koyo.css"),
+            script(src="/htmx.min.js"),
+            metadata_tags(),
+        ],
+        body(class_="bg-white antialiased")[
+            children,
+            site_footer(),
+        ],
+    ]</code></pre>
+        <p>
+          The root layout loads the compiled stylesheet, the vendored htmx
+          script, and renders the site footer around <code>children</code>.
+          <code>metadata_tags()</code> turns the <a href="metadata.html">metadata</a>
+          dict into real head tags.
+        </p>
+      </section>
+
+      <section id="nested">
+        <h2><a class="anchor" href="#nested">Nested layouts<span class="hash">#</span></a></h2>
+        <p>
+          A <code>layout.py</code> in any folder wraps every page below it in
+          the tree, composed inside the root layout. For example, a blog layout:
+        </p>
+        <pre><code># app/blog/layout.py
+from koyoapp.html import aside, div, h2
+
+def layout(children):
+    return div(class_="grid grid-cols-1 lg:grid-cols-4 gap-8")[
+        aside(class_="lg:col-span-1")[
+            h2("Blog index"),
+        ],
+        div(class_="lg:col-span-3")[
+            children,
+        ],
+    ]</code></pre>
+        <p>
+          Here <code>app/blog/page.py</code> and <code>app/blog/[slug]/page.py</code>
+          both render inside the blog sidebar, which itself renders inside the
+          root layout. Nesting orders from the deepest layout outward: page,
+          then folder layouts, then the root.
+        </p>
+      </section>
+
+      <section id="request">
+        <h2><a class="anchor" href="#request">Using the request<span class="hash">#</span></a></h2>
+        <p>
+          A layout can accept <code>request</code> to render request-specific
+          content, for example the route that was visited:
+        </p>
+        <pre><code>def layout(children, request):
+    return html(lang="en")[
+        body[
+            main[
+                children,
+                p(f"Served via {request.method}"),
+            ],
+        ],
+    ]</code></pre>
+        <p>
+          Guard any request usage, because during <a href="production-build.html">koyoapp build</a>
+          the request is not available. Components used in layouts should treat
+          <code>request</code> as optional and fall back gracefully, the way
+          <code>use_state</code> returns its initial value without a live
+          request.
+        </p>
+      </section>
+    </article>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<script src="nav.js"></script>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

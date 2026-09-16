@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Koyo session state: use_state(request, key, initial) returns a value and an action for per-session in-memory counts and flags.">
+<title>Session State | Koyo Docs</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+</head>
+<body data-page="state">
+
+<header id="site-header"></header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Documentation"></nav>
+
+  <main class="content">
+    <article>
+      <h1>Session State</h1>
+      <p class="lede">
+        <code>use_state</code> gives each visitor a tiny amount of state that
+        lives on the server for the life of their session. No database, no
+        config.
+      </p>
+      <div class="rule"></div>
+
+      <section id="concept">
+        <h2><a class="anchor" href="#concept">The idea<span class="hash">#</span></a></h2>
+        <p>
+          Koyo is static-first, but a visit counter or a theme toggle needs a
+          little per-user memory. Sessions are the unit of that memory: every
+          visitor gets their own isolated store that Koyo tracks with an
+          httponly cookie. State is keyed per session, so two tabs from the
+          same browser share a session while two different visitors never do.
+        </p>
+      </section>
+
+      <section id="api">
+        <h2><a class="anchor" href="#api">The API<span class="hash">#</span></a></h2>
+        <p>
+          <code>use_state</code> is a module-level function. Pass the request,
+          a key, and an initial value. It returns a pair: a current value and
+          an action object:
+        </p>
+        <pre><code># components/counter.py
+from koyoapp.html import button, div, p, span
+from koyoapp.state import use_state
+
+def visit_counter(request):
+    count, count_action = use_state(request, "visit_count", 0)
+    return div(class_="card", id="visit-card")[
+        p("Session state, live right here"),
+        div(class_="flex items-center gap-3")[
+            span(id="visit-count")[f"Visits: {count}"],
+            button(class_="btn", hx_target="#visit-card", hx_swap="outerHTML",
+                   **count_action.increment(by=1))["+1"],
+        ],
+    ]</code></pre>
+        <p>The action object changes the value through two helpers:</p>
+        <ul>
+          <li><code>action.increment(by=1)</code> adds to the current value.</li>
+          <li><code>action.set(value)</code> replaces it.</li>
+        </ul>
+        <p>
+          Spraying the action onto the button (<code>**action.increment(by=1)</code>)
+          fills in its <code>hx_post</code> URL automatically, and the
+          <code>hx_target</code> plus <code>hx_swap</code> attributes swap in a
+          fresh render of the card. A component like this lives in the scaffold's
+          <code>components/counter.py</code> and is rendered by the home page.
+        </p>
+      </section>
+
+      <section id="internals">
+        <h2><a class="anchor" href="#internals">How it works<span class="hash">#</span></a></h2>
+        <ul>
+          <li>
+            Mutations are delivered as POST requests to an internal Koyo route
+            (<code>/__koyo_state/&lt;token&gt;</code>); you never build those
+            URLs yourself.
+          </li>
+          <li>
+            The session cookie is named <code>koyo_session</code>, httponly,
+            SameSite=Lax, and scoped to the site path.
+          </li>
+          <li>
+            Sessions expire after 30 minutes of inactivity and are recreated on
+            the next visit.
+          </li>
+        </ul>
+      </section>
+
+      <section id="limitations">
+        <h2><a class="anchor" href="#limitations">Limitations<span class="hash">#</span></a></h2>
+        <div class="note">
+          <p>
+            State is <strong>in memory only</strong>. It is lost when the
+            server restarts, it is not shared across processes or deployments,
+            and it is not a database. Use it for a visit counter or a preference,
+            not for carts, accounts, or anything that must survive a redeploy.
+          </p>
+        </div>
+        <ul>
+          <li>No disk or database backend ships with Koyo today.</li>
+          <li>A single server process holds all active sessions.</li>
+          <li>Two separate browser sessions do not share state.</li>
+        </ul>
+      </section>
+
+      <section id="build">
+        <h2><a class="anchor" href="#build">State during the production build<span class="hash">#</span></a></h2>
+        <p>
+          <code>koyoapp build</code> prerenders pages without a live request, so
+          <code>request</code> is <code>None</code> and there is no session to
+          read. <code>use_state</code> returns the initial value in that case.
+          The result is safe static HTML: a static build always renders the
+          defaults, never a private count.
+        </p>
+      </section>
+    </article>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<script src="nav.js"></script>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

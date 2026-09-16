@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Build reusable UI with koyoapp.html tag factories, the class_ convention, raw HTML, and a components/ folder.">
+<title>Components | Koyo Docs</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+</head>
+<body data-page="components">
+
+<header id="site-header"></header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Documentation"></nav>
+
+  <main class="content">
+    <article>
+      <h1>Components</h1>
+      <p class="lede">
+        Components are plain Python functions that build HTML with the
+        <code>koyoapp.html</code> tag factory. No JSX, no template language.
+      </p>
+      <div class="rule"></div>
+
+      <section id="tag-factories">
+        <h2><a class="anchor" href="#tag-factories">Tag factories<span class="hash">#</span></a></h2>
+        <p>
+          Every HTML tag has a factory with the same name in
+          <code>koyoapp.html</code>. Call it to create the element, then use
+          subscripting to add children. You must call the factory first,
+          subscripting happens after the call:
+        </p>
+        <pre><code>from koyoapp.html import div, h1, p
+
+card = div(class_="rounded-lg border p-4")[
+    h1("Title"),
+    p("Body text"),
+]</code></pre>
+        <p>
+          This produces a nested structure that <code>render_html()</code>
+          serializes to a string.
+        </p>
+      </section>
+
+      <section id="attributes">
+        <h2><a class="anchor" href="#attributes">Attributes<span class="hash">#</span></a></h2>
+        <ul>
+          <li>
+            <code>class_</code> is translated to the HTML <code>class</code>
+            attribute, so the name does not shadow Python keywords.
+          </li>
+          <li>Other attributes pass through with their Python names.</li>
+          <li>
+            Boolean-style flags from htmx, such as <code>hx_trigger</code>,
+            pass through and become their hypenated attribute
+            (<code>hx-trigger</code>).
+          </li>
+        </ul>
+        <pre><code>div(class_="flex items-center gap-2", id="greeting", hx_post="/greet")</code></pre>
+      </section>
+
+      <section id="children">
+        <h2><a class="anchor" href="#children">Children and escaping<span class="hash">#</span></a></h2>
+        <p>
+          String children are HTML-escaped automatically. Tags inside
+          subscript brackets can be nested freely:
+        </p>
+        <pre><code>ul[
+    li("first item"),
+    li("second item"),
+]</code></pre>
+        <p>
+          Passing a raw string that is not safe to escape is where
+          <code>raw()</code> comes in:
+        </p>
+        <pre><code>from koyoapp.html import div, raw
+
+div(raw("&lt;strong&gt;already HTML&lt;/strong&gt;"))</code></pre>
+      </section>
+
+      <section id="render">
+        <h2><a class="anchor" href="#render">Rendering to a string<span class="hash">#</span></a></h2>
+        <p>
+          <code>render_html(element)</code> turns a tag tree into an HTML
+          string. Pages return that string, or return the element directly and
+          let Koyo serialize it:
+        </p>
+        <pre><code>from koyoapp.html import div, render_html
+
+def page():
+    return render_html(div("Hello"))
+    # or simply: return div("Hello")</code></pre>
+      </section>
+
+      <section id="reuse">
+        <h2><a class="anchor" href="#reuse">Reusable components<span class="hash">#</span></a></h2>
+        <p>
+          Put reusable pieces in a <code>components/</code> folder at the
+          project root, then import them by absolute module name:
+        </p>
+        <pre><code># components/site.py
+from koyoapp.html import div, footer, span
+
+def site_footer():
+    return footer(class_="border-t")[
+        div(class_="max-w-6xl mx-auto px-4")[
+            span("Built with Koyo"),
+        ],
+    ]</code></pre>
+        <pre><code># app/layout.py
+from components.site import site_footer</code></pre>
+        <p>
+          Koyo places the project root on the import path during development,
+          so <code>components.site</code> resolves. The scaffold uses this for
+          the landing page hero (<code>components/landing.py</code>), the
+          session counter (<code>components/counter.py</code>), and the site
+          footer (<code>components/site.py</code>).
+        </p>
+      </section>
+
+      <section id="conventions">
+        <h2><a class="anchor" href="#conventions">Component conventions<span class="hash">#</span></a></h2>
+        <ul>
+          <li>Components are functions returning a tag tree.</li>
+          <li>Optional arguments have explicit defaults, especially <code>request=None</code>.</li>
+          <li>Keep presentational state out of components; let <a href="state.html">use_state</a> own it.</li>
+          <li>Use <code>raw()</code> sparingly and never on user input.</li>
+        </ul>
+      </section>
+    </article>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<script src="nav.js"></script>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

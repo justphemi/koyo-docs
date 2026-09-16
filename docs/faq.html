@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Common questions about Koyo: install from source, changing the port, custom CSS, htmx fragments, LAN access, dynamic routes in the build, and session resets.">
+<title>FAQ and Support | Koyo Docs</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+</head>
+<body data-page="faq">
+
+<header id="site-header"></header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Documentation"></nav>
+
+  <main class="content">
+    <article>
+      <h1>FAQ and Support</h1>
+      <p class="lede">
+        Answers to the questions that come up most while building with Koyo.
+      </p>
+      <div class="rule"></div>
+
+      <section id="install">
+        <h2><a class="anchor" href="#install">How do I install Koyo?<span class="hash">#</span></a></h2>
+        <p>
+          <code>pip install koyoapp</code> once the package is published to
+          PyPI. Until then, clone the repository and run
+          <code>pip install -e .</code> inside it. See
+          <a href="getting-started.html#install">Getting Started, Installation</a>.
+        </p>
+      </section>
+
+      <section id="port">
+        <h2><a class="anchor" href="#port">The port is already in use, how do I change it?<span class="hash">#</span></a></h2>
+        <p>
+          Run <code>koyoapp dev --port 8000</code>, or set
+          <code>PORT = 8000</code> in <code>koyo.config.py</code>. The flag wins,
+          then the config value, then 2309.
+        </p>
+      </section>
+
+      <section id="css">
+        <h2><a class="anchor" href="#css">Where does my custom CSS go?<span class="hash">#</span></a></h2>
+        <p>
+          Put it in <code>styles/globals.css</code>. Koyo compiles that file to
+          <code>styles/koyo.css</code> and the root layout links it. Third-party
+          stylesheets can sit in <code>public/</code> or be served from the
+          styles folder untouched.
+        </p>
+      </section>
+
+      <section id="fragments">
+        <h2><a class="anchor" href="#fragments">Do fragments really avoid a page reload?<span class="hash">#</span></a></h2>
+        <p>
+          Yes. An htmx request carries the <code>HX-Request</code> header, which
+          Koyo detects to return only the fragment from a route that exports
+          <code>fragment()</code>. htmx swaps the returned HTML into the current
+          page without reloading it. See
+          <a href="interactivity.html">Interactivity</a>.
+        </p>
+      </section>
+
+      <section id="lan">
+        <h2><a class="anchor" href="#lan">How do I open my app from my phone?<span class="hash">#</span></a></h2>
+        <p>
+          The dev server binds 0.0.0.0 and prints a Network URL such as
+          <code>http://192.168.1.42:2309</code>. Open that on the phone while
+          both are on the same Wi-Fi network. If it does not appear, check the
+          macOS firewall and restrict binding with <code>--host</code> if needed.
+        </p>
+      </section>
+
+      <section id="build-dynamic">
+        <h2><a class="anchor" href="#build-dynamic">Why does the build skip my blog post routes?<span class="hash">#</span></a></h2>
+        <p>
+          Routes like <code>app/blog/[slug]/page.py</code> are dynamic: the
+          build has no list of concrete slugs to prerender, so it skips them and
+          prints a message. The listing page at <code>/blog</code> is still
+          built. Static hosts cannot serve dynamic content by themselves; run a
+          small server if you need to serve generated posts.
+        </p>
+      </section>
+
+      <section id="session-reset">
+        <h2><a class="anchor" href="#session-reset">My counter reset. Why?<span class="hash">#</span></a></h2>
+        <p>
+          Session state lives in server memory and resets when the server
+          restarts, and each session expires after 30 minutes of inactivity.
+          That is the design: Koyo's state is per-session and in memory. See
+          <a href="state.html#limitations">State limitations</a> before relying
+          on it.
+        </p>
+      </section>
+
+      <section id="tabs">
+        <h2><a class="anchor" href="#tabs">Do two browser tabs share state?<span class="hash">#</span></a></h2>
+        <p>
+          Tabs in the same browser share the same session cookie, so yes, they
+          see the same <code>use_state</code> values for the same keys. Two
+          different browsers, or private windows, are separate sessions.
+        </p>
+      </section>
+
+      <section id="support">
+        <h2><a class="anchor" href="#support">Where do I report a problem?<span class="hash">#</span></a></h2>
+        <p>
+          Open an issue on the Koyo repository. Include the version, the
+          command you ran, and the tail of <code>.koyo/dev-server.log</code> when
+          the problem involves the dev server or the build.
+        </p>
+      </section>
+    </article>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<script src="nav.js"></script>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

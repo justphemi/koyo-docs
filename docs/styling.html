@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Koyo styling: Tailwind CSS compiles globals.css to koyo.css, with the Koyo brand indigo #1800ad and the koyo-* animation utilities.">
+<title>Styling and Theme | Koyo Docs</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+</head>
+<body data-page="styling">
+
+<header id="site-header"></header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Documentation"></nav>
+
+  <main class="content">
+    <article>
+      <h1>Styling and Theme</h1>
+      <p class="lede">
+        Tailwind CSS powers styling, your <code>styles/globals.css</code> is
+        compiled once into <code>styles/koyo.css</code>, and the whole site
+        shares one brand color.
+      </p>
+      <div class="rule"></div>
+
+      <section id="tailwind">
+        <h2><a class="anchor" href="#tailwind">Tailwind integration<span class="hash">#</span></a></h2>
+        <p>
+          The scaffold ships <code>package.json</code> and a Tailwind v3
+          <code>tailwind.config.js</code>. Tailwind runs through its CLI, not
+          through a bundler:
+        </p>
+        <ul>
+          <li>
+            Utility classes in your components and pages are scanned by Tailwind
+            from <code>app/</code>, <code>components/</code>, and related source
+            folders.
+          </li>
+          <li>
+            Your custom CSS lives in <code>styles/globals.css</code>.
+          </li>
+          <li>
+            Koyo compiles <code>globals.css</code> to a single
+            <code>styles/koyo.css</code> that the root layout links.
+          </li>
+        </ul>
+      </section>
+
+      <section id="custom-css">
+        <h2><a class="anchor" href="#custom-css">Writing custom CSS<span class="hash">#</span></a></h2>
+        <p>
+          Put component styles and global rules in
+          <code>styles/globals.css</code>. The dev server rebuilds
+          <code>koyo.css</code> whenever you save. The generated
+          <code>koyo.css</code> is excluded from Tailwind's content scan, so
+          utility classes you add to it do not risk a purge.
+        </p>
+        <p>
+          Other CSS files placed under <code>public/</code> or served from the
+          <code>styles/</code> folder are passed through untouched for
+          third-party libraries.
+        </p>
+      </section>
+
+      <section id="brand">
+        <h2><a class="anchor" href="#brand">The brand palette<span class="hash">#</span></a></h2>
+        <p>
+          The Koyo scaffold defines its brand color once in
+          <code>tailwind.config.js</code>:
+        </p>
+        <pre><code>// tailwind.config.js
+theme: {
+  extend: {
+    colors: {
+      brand: {
+        DEFAULT: '#1800ad',   // Koyo indigo
+        dark:    '#13008a',   // pressed / darker
+      },
+    },
+  },
+},</code></pre>
+        <p>
+          Use it anywhere Tailwind accepts a color,
+          for example <code>bg-brand</code>,
+          <code>text-brand</code>, and
+          <code>border-brand</code>. The page
+          <code>&lt;meta name="theme-color" content="#1800ad"&gt;</code>
+          in the root layout matches, so browser chrome tints with the brand.
+        </p>
+      </section>
+
+      <section id="animations">
+        <h2><a class="anchor" href="#animations">Animation utilities<span class="hash">#</span></a></h2>
+        <p>
+          The scaffold includes a few tasteful keyframes in
+          <code>styles/globals.css</code>:
+        </p>
+        <ul>
+          <li><code>koyo-fade-up</code>: fade in and rise, used by the landing hero.</li>
+          <li><code>koyo-float</code>: a gentle vertical float for the hero icon.</li>
+          <li><code>koyo-glow</code>: a soft brand glow behind the hero tile.</li>
+        </ul>
+        <p>
+          They are plain CSS animations, so anything can opt into them.
+        </p>
+      </section>
+
+      <section id="static-assets">
+        <h2><a class="anchor" href="#static-assets">Static assets<span class="hash">#</span></a></h2>
+        <p>
+          Everything in <code>public/</code> is served at the site root: images,
+          favicons, fonts. Introspect the bundled assets that the scaffold
+          copies into <code>public/</code> for the app icon, logo, favicon,
+          manifest, and apple touch icon.
+        </p>
+      </section>
+    </article>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<script src="nav.js"></script>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

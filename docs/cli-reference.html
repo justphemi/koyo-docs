@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Full reference for the koyoapp command line tool: create, dev, add, remove, install, and build.">
+<title>CLI Reference | Koyo Docs</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+</head>
+<body data-page="cli-reference">
+
+<header id="site-header"></header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Documentation"></nav>
+
+  <main class="content">
+    <article>
+      <h1>CLI Reference</h1>
+      <p class="lede">
+        Everything the <code>koyoapp</code> command does, one page.
+      </p>
+      <div class="rule"></div>
+
+      <section id="commands">
+        <h2><a class="anchor" href="#commands">Commands<span class="hash">#</span></a></h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Command</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>koyoapp create NAME</code></td>
+                <td>Scaffold a new project (use <code>.</code> for the current directory).</td>
+              </tr>
+              <tr>
+                <td><code>koyoapp dev</code></td>
+                <td>Run the dev server with hot reload on port 2309 by default.</td>
+              </tr>
+              <tr>
+                <td><code>koyoapp add PKG</code></td>
+                <td>Declare a dependency and install it (pin or specifier).</td>
+              </tr>
+              <tr>
+                <td><code>koyoapp remove PKG</code></td>
+                <td>Remove a dependency from both groups and uninstall it.</td>
+              </tr>
+              <tr>
+                <td><code>koyoapp install</code></td>
+                <td>Create <code>.venv</code> if needed and install all dependencies.</td>
+              </tr>
+              <tr>
+                <td><code>koyoapp build</code></td>
+                <td>Prerender static routes to <code>.koyo/build/site</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="common">
+        <h2><a class="anchor" href="#common">Common options<span class="hash">#</span></a></h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Option</th>
+                <th>Applies to</th>
+                <th>Effect</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>--port PORT</code></td>
+                <td><code>dev</code></td>
+                <td>Override the listen port (default 2309).</td>
+              </tr>
+              <tr>
+                <td><code>--host HOST</code></td>
+                <td><code>dev</code></td>
+                <td>Bind address (default 0.0.0.0).</td>
+              </tr>
+              <tr>
+                <td><code>--verbose</code></td>
+                <td><code>dev</code>, <code>add</code>, <code>remove</code>, <code>install</code></td>
+                <td>Stream detailed output to the terminal.</td>
+              </tr>
+              <tr>
+                <td><code>--dev</code></td>
+                <td><code>add</code></td>
+                <td>Write to the dev optional dependency group.</td>
+              </tr>
+              <tr>
+                <td><code>--no-dev</code></td>
+                <td><code>install</code></td>
+                <td>Skip the dev dependency group.</td>
+              </tr>
+              <tr>
+                <td><code>--clean</code></td>
+                <td><code>install</code></td>
+                <td>Delete and recreate <code>.venv</code> before installing.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="examples">
+        <h2><a class="anchor" href="#examples">Examples<span class="hash">#</span></a></h2>
+        <pre><code>koyoapp create my-app
+cd my-app
+
+koyoapp dev --port 8080 --host 127.0.0.1
+koyoapp add requests
+koyoapp add "httpx>=0.27" --dev
+koyoapp install --no-dev
+koyoapp build</code></pre>
+        <p>
+          The dependency commands report "not a koyo project" with a hint when
+          run outside a folder containing <code>koyo.config.py</code>.
+        </p>
+      </section>
+    </article>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<script src="nav.js"></script>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

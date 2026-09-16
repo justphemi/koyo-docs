@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Koyo is a Python static-first web framework on Starlette with file based routing, Tailwind styling, htmx interactivity, and a prerendering production build.">
+<title>Koyo Docs</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+</head>
+<body data-page="">
+
+<header id="site-header"></header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Documentation"></nav>
+
+  <main class="content">
+    <article class="hero">
+      <img class="hero-logo" src="assets/icon.png" alt="">
+      <h1>Koyo</h1>
+      <p class="lede">
+        A Python web framework that puts the static output first. File based
+        routing, nested layouts, an HTML tag factory for components, Tailwind
+        for styling, and htmx for just enough interactivity. Then a build step
+        that prerenders your pages into plain HTML.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="getting-started.html">Getting started</a>
+        <a class="btn btn-secondary" href="cli-reference.html">CLI reference</a>
+      </div>
+
+      <section class="quickstart" id="quickstart">
+        <h2>Quick start</h2>
+        <pre><code>pip install koyoapp     # once published
+koyoapp create my-app
+cd my-app
+koyoapp dev
+# open http://127.0.0.1:2309</code></pre>
+      </section>
+    </article>
+
+    <article>
+      <section id="features">
+        <h2>What Koyo gives you</h2>
+        <div class="rule"></div>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>File based routing</h3>
+            <p>app/page.py maps to / out of the box. Add folders to build more routes; dynamic segments use bracket folders.</p>
+          </div>
+          <div class="feature-card">
+            <h3>Nested layouts</h3>
+            <p>A layout.py anywhere in the tree wraps every page below it, composed inside the root layout.</p>
+          </div>
+          <div class="feature-card">
+            <h3>Components without JSX</h3>
+            <p>koyoapp.html is a tag factory. Build reusable components in a components/ folder with Python functions.</p>
+          </div>
+          <div class="feature-card">
+            <h3>Tailwind styling</h3>
+            <p>globals.css compiles to koyo.css with your brand color, here the Koyo indigo #1800ad.</p>
+          </div>
+          <div class="feature-card">
+            <h3>htmx interactivity</h3>
+            <p>htmx 2.0 is vendored in. Pages can return fragments that swap into the DOM without a full reload.</p>
+          </div>
+          <div class="feature-card">
+            <h3>Session state</h3>
+            <p>use_state gives per-session in-memory values with increment and set actions.</p>
+          </div>
+          <div class="feature-card">
+            <h3>Zero deps for runtime</h3>
+            <p>Starlette, Uvicorn, watchfiles, typer, and tomlkit. That is the whole runtime footprint.</p>
+          </div>
+          <div class="feature-card">
+            <h3>Production build</h3>
+            <p>koyoapp build prerenders every static route to plain HTML with your assets and minified CSS.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="for-who">
+        <h2>Who this is for</h2>
+        <div class="rule"></div>
+        <p>
+          Koyo is for developers who want to build a marketing site, a doc site,
+          or an internal tool with plain Python, ship plain HTML, and avoid both
+          a JavaScript framework on the server and a heavy frontend build chain.
+        </p>
+        <p>
+          State is deliberately simple and in memory, so Koyo is not the right
+          fit when you need a database, user accounts, or multi-process
+          sessions. See "<a href="state.html#limitations">State limitations</a>"
+          and the <a href="faq.html">FAQ</a>.
+        </p>
+      </section>
+    </article>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<script src="nav.js"></script>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

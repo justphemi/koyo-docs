@@ -1,0 +1,4 @@
+# Local Groq API key. Copy config.example.js to config.js and fill in the key.
+docs/config.js
+
+.DS_Store

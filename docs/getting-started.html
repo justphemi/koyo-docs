@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Install Koyo, create a project, and run the dev server on port 2309.">
+<title>Getting Started | Koyo Docs</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+</head>
+<body data-page="getting-started">
+
+<header id="site-header"></header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Documentation"></nav>
+
+  <main class="content">
+    <article>
+      <h1>Getting Started</h1>
+      <p class="lede">
+        Install Koyo, create a project, and open it in your browser within a
+        minute.
+      </p>
+      <div class="rule"></div>
+
+      <section id="requirements">
+        <h2><a class="anchor" href="#requirements">Requirements<span class="hash">#</span></a></h2>
+        <ul>
+          <li>Python 3.11 or newer.</li>
+          <li>
+            The runtime dependencies are Starlette, Uvicorn, watchfiles, typer,
+            and tomlkit. They install automatically.
+          </li>
+          <li>
+            No JavaScript framework is required and no Node runtime is needed to
+            run the app. The optional Tailwind CLI powers styling.
+          </li>
+        </ul>
+      </section>
+
+      <section id="install">
+        <h2><a class="anchor" href="#install">Installation<span class="hash">#</span></a></h2>
+        <pre><code>pip install koyoapp</code></pre>
+        <!-- <div class="note">
+          <p>
+            Koyo is not yet published to PyPI. Until then, install from source:
+            clone the repository, then run <code>pip install -e .</code> inside
+            it. The <code>koyoapp</code> command becomes available either way.
+          </p>
+        </div> -->
+      </section>
+
+      <section id="create">
+        <h2><a class="anchor" href="#create">Create a project<span class="hash">#</span></a></h2>
+        <pre><code>koyoapp create my-app
+cd my-app</code></pre>
+        <p>
+          Pass a dot to scaffold into the current directory:
+          <code>koyoapp create .</code>
+        </p>
+        <p>A new project looks like this:</p>
+        <pre><code>my-app/
+  app/
+    layout.py        # root layout, wraps every page
+    page.py          # routes to /
+  components/        # reusable UI components
+    landing.py       # animated hero with the docs call to action
+    counter.py       # session counter powered by use_state
+    site.py          # footer with the docs link
+  public/            # static files served at /
+  styles/
+    globals.css      # compiled to styles/koyo.css
+  koyo.config.py     # PORT and PROJECT_NAME
+  pyproject.toml     # dependencies managed by the CLI
+  package.json       # Tailwind tooling (styling only)
+  tailwind.config.js</code></pre>
+      </section>
+
+      <section id="run">
+        <h2><a class="anchor" href="#run">Run the dev server<span class="hash">#</span></a></h2>
+        <pre><code>koyoapp dev</code></pre>
+        <p>
+          Open <a href="http://127.0.0.1:2309">http://127.0.0.1:2309</a> in
+          your browser. The server prints Local and Network URLs, compiles
+          Tailwind automatically, and reloads the browser when you edit files.
+        </p>
+        <p>
+          Change the port with <code>--port 8000</code> or by setting
+          <code>PORT</code> in <code>koyo.config.py</code>. The flag always wins,
+          then <code>PORT</code>, then the default 2309.
+        </p>
+        <p>
+          The server binds 0.0.0.0 by default so phones on your network can
+          reach it. Override with <code>--host 127.0.0.1</code> if you prefer.
+        </p>
+      </section>
+
+      <section id="next">
+        <h2><a class="anchor" href="#next">Next steps<span class="hash">#</span></a></h2>
+        <ul>
+          <li><a href="routing.html">Routing</a> to add pages and dynamic segments.</li>
+          <li><a href="layouts.html">Layouts</a> for the shared page skeleton.</li>
+          <li><a href="components.html">Components</a> for reusable UI.</li>
+          <li><a href="interactivity.html">Interactivity</a> for htmx fragments.</li>
+          <li><a href="production-build.html">Production build</a> to prerender your site.</li>
+        </ul>
+      </section>
+    </article>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<script src="nav.js"></script>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

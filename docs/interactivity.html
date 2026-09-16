@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Add interactivity to Koyo with vendored htmx and server-rendered fragments that swap into the DOM without a full reload.">
+<title>Interactivity with htmx | Koyo Docs</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+</head>
+<body data-page="interactivity">
+
+<header id="site-header"></header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Documentation"></nav>
+
+  <main class="content">
+    <article>
+      <h1>Interactivity with htmx</h1>
+      <p class="lede">
+        Koyo stays static-first and stays on the server for behavior. htmx 2.0
+        is vendored in, and pages can answer with small HTML fragments that the
+        browser swaps in place.
+      </p>
+      <div class="rule"></div>
+
+      <section id="htmx">
+        <h2><a class="anchor" href="#htmx">htmx is built in<span class="hash">#</span></a></h2>
+        <p>
+          The scaffold ships htmx 2.0.4 at <code>/htmx.min.js</code> and loads
+          it from the root layout:
+        </p>
+        <pre><code># app/layout.py
+script(src="/htmx.min.js")</code></pre>
+        <p>
+          Because <code>hx_</code> attributes pass through the tag factory to
+          their hyphenated form, you write htmx directly in components:
+        </p>
+        <pre><code>button(
+    class_="btn",
+    hx_get="/hello",
+    hx_swap="outerHTML",
+)("Say hello")</code></pre>
+      </section>
+
+      <section id="fragments">
+        <h2><a class="anchor" href="#fragments">Fragments<span class="hash">#</span></a></h2>
+        <p>
+          A page module can export a <code>fragment()</code> function. When the
+          request carries the <code>HX-Request</code> header (every htmx
+          request does), a fragment route returns just the fragment, without
+          the surrounding layout:
+        </p>
+        <pre><code># app/greet/page.py
+from koyoapp.html import p
+
+def page():
+    # A non-htmx visitor sees the full page.
+    return "Full page markup for /greet."
+
+def fragment(request):
+    # An htmx request gets only this snippet to swap in.
+    return p("Hello from a fragment.")</code></pre>
+        <p>
+          Koyo adds dedicated support for this pattern: a route file that only
+          defines <code>fragment()</code> always returns a bare fragment, so an
+          <code>hx_post</code> to that route never ships the full page markup
+          down the wire.
+        </p>
+      </section>
+
+      <section id="example">
+        <h2><a class="anchor" href="#example">Working example: the session counter<span class="hash">#</span></a></h2>
+        <p>
+          The scaffold's single home page demonstrates the full loop with the
+          counter in <code>components/counter.py</code>:
+        </p>
+        <ol>
+          <li>
+            A button posts to the <code>/__koyo_state</code> URL that
+            <code>use_state</code>'s action fills in automatically, see
+            <a href="state.html">session state</a>.
+          </li>
+          <li>
+            Koyo increments the session value and re-renders the card with the
+            new count.
+          </li>
+          <li>
+            <code>hx_target="#visit-card"</code> with
+            <code>hx_swap="outerHTML"</code> swaps the response in place,
+            replacing the old card. No page reload.
+          </li>
+        </ol>
+        <p>
+          Open the home page of your app, click the plus button, and watch the
+          count update without a navigation.
+        </p>
+      </section>
+
+      <section id="when">
+        <h2><a class="anchor" href="#when">When to use it<span class="hash">#</span></a></h2>
+        <ul>
+          <li>
+            Use fragments for counters, forms, search results, tabs, and
+            inline updates.
+          </li>
+          <li>
+            Prefer leaves-provided behavior over hand-written JavaScript; a
+            fragment is still server-rendered HTML.
+          </li>
+          <li>
+            Reserve a full page and heavy client logic for interactions that
+            htmx cannot express well.
+          </li>
+        </ul>
+      </section>
+    </article>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<script src="nav.js"></script>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

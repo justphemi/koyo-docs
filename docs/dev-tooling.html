@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Koyo development tooling: the dev server on port 2309, hot reload with a token, quiet logs, verbose mode, and the debug error page.">
+<title>Development Tooling | Koyo Docs</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+</head>
+<body data-page="dev-tooling">
+
+<header id="site-header"></header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Documentation"></nav>
+
+  <main class="content">
+    <article>
+      <h1>Development Tooling</h1>
+      <p class="lede">
+        The dev server is designed to be quiet and fast: local and network
+        URLs, automatic browser reload, and logs that stay out of your way
+        until you ask for them.
+      </p>
+      <div class="rule"></div>
+
+      <section id="server">
+        <h2><a class="anchor" href="#server">Starting the server<span class="hash">#</span></a></h2>
+        <pre><code>koyoapp dev</code></pre>
+        <p>The startup block tells you where the app is reachable:</p>
+        <pre><code>Koyo dev server running
+  Local:   http://127.0.0.1:2309
+  Network: http://192.168.1.42:2309</code></pre>
+        <p>
+          The port resolution order is the <code>--port</code> flag, then
+          <code>PORT</code> in <code>koyo.config.py</code>, then the default
+          2309. The default bind is 0.0.0.0 so devices on your LAN work; pass
+          <code>--host 127.0.0.1</code> to restrict to localhost.
+        </p>
+      </section>
+
+      <section id="reload">
+        <h2><a class="anchor" href="#reload">Watch and hot reload<span class="hash">#</span></a></h2>
+        <p>These paths are watched and any change reloads or recompiles:</p>
+        <ul>
+          <li><code>app/</code> and <code>components/</code> (Python modules).</li>
+          <li><code>public/</code> (static files).</li>
+          <li><code>styles/</code> (Tailwind rebuild).</li>
+          <li><code>koyo.config.py</code> and <code>tailwind.config.js</code>.</li>
+        </ul>
+        <p>
+          The browser auto-reloads through a polling endpoint
+          (<code>/__koyo-reload</code>) guarded by a token stored in
+          <code>.koyo/reload-token</code>. Python bytecode cache is redirected
+          to <code>.koyo/pycache</code> so <code>__pycache__</code> never
+          appears in your source tree.
+        </p>
+      </section>
+
+      <section id="logs">
+        <h2><a class="anchor" href="#logs">Logs and verbose mode<span class="hash">#</span></a></h2>
+        <ul>
+          <li>
+            By default logs stay quiet. The console shows a summary, and detail
+            is written to <code>.koyo/dev-server.log</code> and
+            <code>.koyo/tailwind.log</code>.
+          </li>
+          <li>
+            Pass <code>--verbose</code> to stream the full request and rebuild
+            logs to the terminal.
+          </li>
+          <li>
+            The same flag exists on <code>add</code>, <code>remove</code>, and
+            <code>install</code> for a glanceable explanation of each step.
+          </li>
+        </ul>
+      </section>
+
+      <section id="errors">
+        <h2><a class="anchor" href="#errors">Errors in development<span class="hash">#</span></a></h2>
+        <p>
+          Set <code>KOYO_DEV=1</code> in the environment to enable the
+          interactive debug error page. It shows the failing Python traceback
+          and the request details, so template errors are visible right in the
+          browser. Without <code>KOYO_DEV</code>, errors return a generic
+          internal server error and the traceback stays in the log.
+        </p>
+      </section>
+
+      <section id="config">
+        <h2><a class="anchor" href="#config">koyo.config.py<span class="hash">#</span></a></h2>
+        <pre><code>PROJECT_NAME = "my-app"
+PORT = 2309</code></pre>
+        <p>
+          The config file marks a directory as a Koyo project and is read for
+          defaults by the CLI and the dev server.
+        </p>
+      </section>
+    </article>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<script src="nav.js"></script>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

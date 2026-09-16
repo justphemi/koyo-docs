@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="koyoapp build prerenders every static route to plain HTML in .koyo/build/site, copies public assets, and minifies the compiled Tailwind CSS.">
+<title>Production Build | Koyo Docs</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+</head>
+<body data-page="production-build">
+
+<header id="site-header"></header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Documentation"></nav>
+
+  <main class="content">
+    <article>
+      <h1>Production Build</h1>
+      <p class="lede">
+        <code>koyoapp build</code> turns your Koyo app into a folder of plain
+        HTML, ready for any static host.
+      </p>
+      <div class="rule"></div>
+
+      <section id="why">
+        <h2><a class="anchor" href="#why">Why a static build<span class="hash">#</span></a></h2>
+        <p>
+          Koyo is static-first. Every page is a Python function that renders to
+          HTML, so the whole site can be evaluated once, ahead of time, into
+          real files. The result needs no Python at serving time and can be
+          dropped onto any CDN, object store, or web server.
+        </p>
+      </section>
+
+      <section id="output">
+        <h2><a class="anchor" href="#output">What the build produces<span class="hash">#</span></a></h2>
+        <pre><code>.koyo/build/site/
+  index.html            # the / route
+  styles/koyo.css       # compiled, minified CSS
+  htmx.min.js           # vendored script, served from public/
+  ...                   # public/ copied verbatim</code></pre>
+        <ul>
+          <li>
+            Every static route is written as <code>&lt;route&gt;/index.html</code>,
+            so relative asset links keep working on any host.
+          </li>
+          <li>
+            <code>public/</code> is copied into the site root unchanged.
+          </li>
+          <li>
+            The compiled Tailwind stylesheet is minified for production.
+          </li>
+          <li>
+            Python bytecode cache is never written into the build output
+            (<code>.koyo/pycache</code> keeps it out).
+          </li>
+        </ul>
+      </section>
+
+      <section id="dynamic">
+        <h2><a class="anchor" href="#dynamic">Dynamic routes<span class="hash">#</span></a></h2>
+        <p>
+          Routes with a bracketed dynamic segment, such as
+          <code>app/blog/[slug]/page.py</code>, have no list of concrete URLs to
+          prerender by default. The build skips them and prints a message about
+          each skipped route:
+        </p>
+        <pre><code>Skipped dynamic routes, they are not prerendered and must be served by the running Koyo server: blog/[slug]</code></pre>
+        <p>
+          Static pages, fragments, and the site index all build normally. A
+          dynamic route's listing page (for example <code>app/blog/page.py</code>
+          at <code>/blog</code>) is still a static route and is built.
+        </p>
+      </section>
+
+      <section id="session">
+        <h2><a class="anchor" href="#session">Sessions and personalization<span class="hash">#</span></a></h2>
+        <p>
+          During the build there is no session and <code>request</code> is
+          <code>None</code>. <code>use_state</code> falls back to its initial
+          value, so built pages render fresh defaults, never a visitor's
+          private state. Personalization happens only while the served pages
+          run with a live request.
+        </p>
+      </section>
+
+      <section id="serve">
+        <h2><a class="anchor" href="#serve">Serving the build<span class="hash">#</span></a></h2>
+        <p>
+          Point any static host at <code>.koyo/build/site</code>. For a quick
+          local check:
+        </p>
+        <pre><code>python3 -m http.server 8000 --directory .koyo/build/site
+# open http://127.0.0.1:8000</code></pre>
+        <p>
+          Because output is plain HTML with relative paths, there is no required
+          server rewrite for the routes the build created.
+        </p>
+      </section>
+    </article>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<script src="nav.js"></script>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

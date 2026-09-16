@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Add per-page metadata in Koyo: title, description, and og_image merge key by key from page to layout to root defaults.">
+<title>Metadata | Koyo Docs</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+</head>
+<body data-page="metadata">
+
+<header id="site-header"></header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Documentation"></nav>
+
+  <main class="content">
+    <article>
+      <h1>Metadata</h1>
+      <p class="lede">
+        Per-page title, description, and Open Graph tags, merged cleanly from
+        the deepest page up through its layouts.
+      </p>
+      <div class="rule"></div>
+
+      <section id="per-page">
+        <h2><a class="anchor" href="#per-page">Declaring metadata<span class="hash">#</span></a></h2>
+        <p>
+          A page module exports a <code>metadata</code> dictionary alongside its
+          <code>page()</code> function:
+        </p>
+        <pre><code># app/post/page.py
+metadata = {
+    "title": "About Koyo",
+    "description": "Koyo is a static-first Python web framework.",
+    "og_image": "/images/about-card.png",
+}
+
+def page():
+    ...</code></pre>
+        <p>Supported keys:</p>
+        <ul>
+          <li><code>title</code>: the document title.</li>
+          <li><code>description</code>: the meta description.</li>
+          <li><code>og_image</code>: the Open Graph image path.</li>
+        </ul>
+      </section>
+
+      <section id="merging">
+        <h2><a class="anchor" href="#merging">How metadata merges<span class="hash">#</span></a></h2>
+        <p>
+          When a page renders, Koyo collects metadata from the page and every
+          layout it passes through, then merges <strong>key by key</strong>,
+          nearest wins. The page overrides its immediate folder layout, which
+          overrides the root layout, whose values act as the project defaults:
+        </p>
+        <pre><code># app/layout.py, the default for every page
+metadata = {
+    "title": "Koyo",
+    "description": "The Koyo framework.",
+}</code></pre>
+        <p>
+          A page that only sets <code>title</code> keeps the root description.
+          A nested layout can contribute defaults for its whole folder, and a
+          page underneath can refine one key without copying the rest.
+        </p>
+      </section>
+
+      <section id="rendering">
+        <h2><a class="anchor" href="#rendering">Rendering the tags<span class="hash">#</span></a></h2>
+        <p>
+          The root layout renders the merged metadata into the head with
+          <code>metadata_tags()</code>:
+        </p>
+        <pre><code># app/layout.py
+from koyoapp.meta import metadata_tags
+
+def layout(children, request):
+    return html(lang="en")[
+        head()[
+            metadata_tags(),
+        ],
+        body[children],
+    ]</code></pre>
+        <p>
+          Koyo holds the merged metadata for the route it is rendering, so
+          <code>metadata_tags()</code> takes no arguments. It emits the title
+          element plus the standard description and Open Graph tags (og:title,
+          og:description, og:image), so shared pages preview correctly when
+          linked on social platforms.
+        </p>
+      </section>
+    </article>
+  </main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<script src="nav.js"></script>
+<script src="search-index.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
