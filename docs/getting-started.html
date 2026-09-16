@@ -82,7 +82,7 @@ cd my-app</code></pre>
         <h2><a class="anchor" href="#run">Run the dev server<span class="hash">#</span></a></h2>
         <pre><code>koyoapp dev</code></pre>
         <p>
-          Open <a href="http://127.0.0.1:2309">http://127.0.0.1:2309</a> in
+          Open <a href="http://localhost:2309">http://localhost:2309</a> in
           your browser. The server prints Local and Network URLs, compiles
           Tailwind automatically, and reloads the browser when you edit files.
         </p>
@@ -92,8 +92,9 @@ cd my-app</code></pre>
           then <code>PORT</code>, then the default 2309.
         </p>
         <p>
-          The server binds 0.0.0.0 by default so phones on your network can
-          reach it. Override with <code>--host 127.0.0.1</code> if you prefer.
+          The server binds all interfaces by default, so
+          <code>localhost</code> and phones on your network both work.
+          Restrict it with <code>--host 127.0.0.1</code> if you prefer.
         </p>
       </section>
 

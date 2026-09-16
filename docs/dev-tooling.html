@@ -31,13 +31,14 @@
         <pre><code>koyoapp dev</code></pre>
         <p>The startup block tells you where the app is reachable:</p>
         <pre><code>Koyo dev server running
-  Local:   http://127.0.0.1:2309
+  Local:   http://localhost:2309
   Network: http://192.168.1.42:2309</code></pre>
         <p>
           The port resolution order is the <code>--port</code> flag, then
           <code>PORT</code> in <code>koyo.config.py</code>, then the default
-          2309. The default bind is 0.0.0.0 so devices on your LAN work; pass
-          <code>--host 127.0.0.1</code> to restrict to localhost.
+          2309. The default bind is all interfaces so
+          <code>localhost</code> and LAN devices work; pass
+          <code>--host 127.0.0.1</code> to restrict to localhost only.
         </p>
       </section>
 
