@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Common questions about Koyo: install from source, changing the port, custom CSS, htmx fragments, LAN access, dynamic routes in the build, and session resets.">
+<meta name="description" content="Common questions about Koyo: install from source, the auto-incrementing port, custom CSS, htmx fragments, LAN access, dynamic routes in the build, session resets, and the MIT license.">
 <title>FAQ and Support | Koyo Docs</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="styles.css">
@@ -27,9 +27,9 @@
       <section id="install">
         <h2><a class="anchor" href="#install">How do I install Koyo?<span class="hash">#</span></a></h2>
         <p>
-          <code>pip install koyoapp</code> once the package is published to
-          PyPI. Until then, clone the repository and run
-          <code>pip install -e .</code> inside it. See
+          <code>pip install koyoapp</code>. The package is published on
+          PyPI. To develop on the framework itself, clone the repository and
+          run <code>pip install -e .</code> inside it. See
           <a href="getting-started.html#install">Getting Started, Installation</a>.
         </p>
       </section>
@@ -37,9 +37,14 @@
       <section id="port">
         <h2><a class="anchor" href="#port">The port is already in use, how do I change it?<span class="hash">#</span></a></h2>
         <p>
-          Run <code>koyoapp dev --port 8000</code>, or set
-          <code>PORT = 8000</code> in <code>koyo.config.py</code>. The flag wins,
-          then the config value, then 2309.
+          You do not need to. <code>koyoapp dev</code> starts on port 2309 by
+          default, or the <code>PORT</code> setting in
+          <code>koyo.config.py</code>, or what you pass with
+          <code>--port</code>, whichever is applied first. If that port is
+          already taken, the dev server automatically moves to the next free
+          port (2309 becomes 2310, and so on) and prints
+          <code>Port 2309 is already in use, using 2310 instead</code>. You can
+          still force a specific port with <code>koyoapp dev --port 8000</code>.
         </p>
       </section>
 
@@ -112,6 +117,17 @@
           Open an issue on the Koyo repository. Include the version, the
           command you ran, and the tail of <code>.koyo/dev-server.log</code> when
           the problem involves the dev server or the build.
+        </p>
+      </section>
+
+      <section id="license">
+        <h2><a class="anchor" href="#license">Can I use Koyo for anything, and contribute?<span class="hash">#</span></a></h2>
+        <p>
+          Yes. Koyo is free and open source under the MIT license. Use it
+          anywhere, for any project, personal or commercial, for free. The
+          license and copyright line live in the <code>LICENSE</code> file in
+          the repository. Contributions are welcome: open an issue for a bug or
+          feature, or a pull request with a change and a short description.
         </p>
       </section>
     </article>
