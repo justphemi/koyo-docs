@@ -36,8 +36,9 @@
         <p>
           The port resolution order is the <code>--port</code> flag, then
           <code>PORT</code> in <code>koyo.config.py</code>, then the default
-          2309. The default bind is all interfaces so
-          <code>localhost</code> and LAN devices work; pass
+          2309. If the chosen port is already in use, the server
+          automatically moves to the next free port. The default bind is all
+          interfaces so <code>localhost</code> and LAN devices work; pass
           <code>--host 127.0.0.1</code> to restrict to localhost only.
         </p>
       </section>

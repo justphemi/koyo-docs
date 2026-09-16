@@ -90,7 +90,8 @@ cd my-app</code></pre>
         <p>
           Change the port with <code>--port 8000</code> or by setting
           <code>PORT</code> in <code>koyo.config.py</code>. The flag always wins,
-          then <code>PORT</code>, then the default 2309.
+          then <code>PORT</code>, then the default 2309. If the port is already
+          in use, the next free port is used automatically.
         </p>
         <p>
           The server binds all interfaces by default, so
